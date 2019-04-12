@@ -16,12 +16,13 @@ def get_school():
 
 @api.route('/create', methods=['POST'])
 def create_school():
+    jsonData = request.get_json()
     with db.auto_commit():
         school = School()
-        school.school_name = request.form.get('school_name')
-        school.school_address = request.form.get('school_address')
+        school.school_name = jsonData['school_name']
+        school.school_address = jsonData['school_address']
         db.session.add(school)
-    return Success()
+    return Success(msg='新增成功')
 
 @api.route('/update')
 def update_school():

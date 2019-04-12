@@ -1,5 +1,6 @@
 from flask import Blueprint
-from app.api.v1 import user, book, client, school
+from app.api.v1 import user, book, client, school, school_admin, league
+
 
 def create_blueprint_v1():
     bp_v1 = Blueprint('v1', __name__)
@@ -7,5 +8,6 @@ def create_blueprint_v1():
     book.api.register(bp_v1)
     client.api.register(bp_v1)
     school.api.register(bp_v1)
-
+    school_admin.api.register(bp_v1)
+    league.api.register(bp_v1)
     return bp_v1

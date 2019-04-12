@@ -2,6 +2,7 @@ from flask import jsonify, request
 from app.libs.redprint import Redprint
 from app.models.base import db
 from app.models.school import School
+from app.libs.error_code import Success
 
 api = Redprint('school')
 
@@ -11,16 +12,16 @@ def get_school():
     schools = []
     for sc in school:
         schools.append(sc.to_json())
-    return jsonify(schools)
+    return Success(msg='查找成功',data=schools)
 
 @api.route('/create', methods=['POST'])
 def create_school():
     with db.auto_commit():
         school = School()
-        school.school_name = request.form.get('name')
-        school.school_address = request.form.get('address')
+        school.school_name = request.form.get('school_name')
+        school.school_address = request.form.get('school_address')
         db.session.add(school)
-    return '新增成功'
+    return Success()
 
 @api.route('/update')
 def update_school():

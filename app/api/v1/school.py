@@ -8,11 +8,11 @@ api = Redprint('school')
 
 @api.route('/get', methods=['GET'])
 def get_school():
-    school = School.query.all()
+    school = School.query.filter_by()
     schools = []
     for sc in school:
         schools.append(sc.to_json())
-    return Success(msg='查找成功',data=schools)
+    return Success(msg='查找学校成功',data=schools)
 
 @api.route('/create', methods=['POST'])
 def create_school():
@@ -22,19 +22,23 @@ def create_school():
         school.school_name = jsonData['school_name']
         school.school_address = jsonData['school_address']
         db.session.add(school)
-    return Success(msg='新增成功')
+    return Success(msg='新增学校成功')
 
-@api.route('/update')
+@api.route('/update',methods=['POST'])
 def update_school():
+    jsonData = request.get_json()
     with db.auto_commit():
-        sc = School.query.filter(School.school_name == "黑龙江科技大学7").first()
-        sc.school_name = "黑龙江科技大学"
-    return '修改成功'
+        sc = School.query.filter(School.school_id == jsonData['school_id']).first()
+        sc.school_name = jsonData['school_name']
+        sc.school_address = jsonData['school_address']
+        return Success(msg='修改学校成功')
 
 @api.route('/delete')
 def delete_school():
-    data = request.args.get('school_name')
+    school_id = request.args.get('school_id')
+    # print(school_id)
     with db.auto_commit():
-        sc = School.query.filter(School.school_name == data).first()
-        db.session.delete(sc)
-    return '删除成功'
+        sc = School.query.filter_by(school_id=school_id).first()
+        sc.status = 0
+        # db.session.delete(sc)
+    return Success(msg='删除学校成功')

@@ -15,7 +15,9 @@ def create_league():
         league.league_name = jsonData['league_name']
         league.league_type = jsonData['league_type']
         league.league_url = jsonData['league_url']
-        # print(league.league_name)
+        league.category_id = jsonData['category_id']
+        league.school_id= jsonData['school_id']
+
         db.session.add(league)
     return Success(msg='新增成功')
 

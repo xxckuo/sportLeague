@@ -37,15 +37,6 @@ def query_type():
         league_types.append(type.to_json())
     return Success(msg='查找成功', data=league_types)
 
-# @api.route('/query_url')
-# def query_url():
-#     args = request.args.get("league_url")
-#     league_type = League.query.filter(League.league_url==args).all()
-#     league_types = []
-#     for type in league_type:
-#         league_types.append(type.to_json())
-#     return Success(msg='查找成功', data=league_types)
-
 
 @api.route('/delete_league')
 def delete_league():
@@ -64,4 +55,4 @@ def update_league():
         leagues.league_name = jsonData['league_name']
         leagues.league_type = jsonData['league_type']
         leagues.league_url = jsonData['league_url']
-    return Success(msg='删除成功')
+    return Success(msg='修改成功')

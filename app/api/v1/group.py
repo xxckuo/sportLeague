@@ -29,7 +29,7 @@ def create_group():
 
 @api.route('/get')
 def get_all_group_league_id():
-    # 根据赛事id获取所有分组情况
+    # 根据赛事id获取所有分组详细情况
     league_id = request.args.get('league_id')
     datas = []
     data = db.session.query(Group).filter(Group.league_id==league_id)
@@ -55,3 +55,14 @@ def get_all_group_league_id():
         tempdata['group_team'] =teams
         datas.append(tempdata)
     return Success(msg='查询成功', data=datas)
+
+@api.route('/getgroup')
+def get_all_group_by_league_id():
+    league_id = request.args.get('league_id')
+    data = db.session.query(Group).filter(Group.league_id == league_id)
+    returnDatas=[]
+    for d in data:
+        tempdata = d.to_json()
+        tempdata['schedule_process'] = 1
+        returnDatas.append(tempdata)
+    return Success(msg='查询成功', data=returnDatas)

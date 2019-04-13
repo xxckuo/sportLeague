@@ -1,3 +1,3 @@
-SQLALCHEMY_DATABASE_URI = 'mysql+cymysql://root:111111@localhost/sport_league'
+SQLALCHEMY_DATABASE_URI = 'mysql+cymysql://root:''@localhost/sportleague'
 
 SQLALCHEMY_TRACK_MODIFICATIONS = True

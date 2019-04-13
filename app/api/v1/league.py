@@ -15,18 +15,22 @@ def create_league():
         league.league_name = jsonData['league_name']
         league.league_type = jsonData['league_type']
         league.league_url = jsonData['league_url']
-        # print(league.league_name)
+        league.category_id = jsonData['category_id']
+        league.school_id= jsonData['school_id']
+
         db.session.add(league)
     return Success(msg='新增成功')
 
 
-@api.route('/query')
-def query():
-    league = League.query.all()
-    leagues = []
-    for la in league:
-        leagues.append(la.to_json())
-    return Success(msg='查找成功', data=leagues)
+@api.route('/query_id')
+def query_id():
+    args = request.args.get("school_id")
+    league_type = League.query.filter(League.school_id==args).all()
+    league_types = []
+    for type in league_type:
+        league_types.append(type.to_json())
+    return Success(msg='查找成功', data=league_types)
+
 
 @api.route('/query_type')
 def query_type():

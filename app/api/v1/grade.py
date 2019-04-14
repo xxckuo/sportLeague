@@ -3,44 +3,36 @@ from app.libs.redprint import Redprint
 from app.models.base import db
 from app.libs.error_code import Success
 from app.models.grade import Grade
-from app.models.league import League
+from app.models.team import Team
 
 api = Redprint('grade')
+@api.route('/display_grade')
+def display_grade():
+    league_id = request.args.get('league_id')
+    data = db.session.query(Grade).filter(Grade.league_id == league_id)
+    for d in data:
+        team = db.session.query(Grade.grade_id,Grade.grade_team,Grade.grade_turns,Grade.grade_win,Grade.grade_equal
+                                ,Grade.grade_lose,Grade.grade_goal,Grade.grade_fumble,Grade.grade_integral,Team.team_logo,Team.team_name).\
+        filter(Grade.league_id == league_id,Team.team_id == d.grade_team). \
+            order_by(Grade.grade_integral.desc())
+        tempdata = d.to_json()
+        teams = []
+        for b in team:
+            d={}
+            d['grade_id'] = b[0]
+            d['grade_team'] = b[1]
+            d['grade_turns'] = b[2]
+            d['grade_win'] = b[3]
+            d['grade_equal'] = b[4]
+            d['grade_lose'] = b[5]
+            d['grade_goal'] = b[6]
+            d['grade_fumble'] = b[7]
+            d['grade_integral'] = b[8]
+            d['team_logo']=b[9]
+            d['team_name']=b[10]
+            teams.append(d)
+            tempdata['grade_team'] = teams
+        return Success(msg='查询成功', data=teams)
 
-@api.route('/create_grade', methods=['POST'])
-def create_grade():
-    jsonData = request.get_json()
-    print(jsonData)
-    with db.auto_commit():
-        grade = Grade()
-        league_message = League.query.filter(League.league_id==jsonData['league_id']).all()
-        league_messages = []
-        for me in league_message:
-            league_messages.append(me.to_json())
-            print(league_messages)
-            if league_messages[0]['league_type'] == 1:
-                grade.grade_team = jsonData['grade_team']
-                grade.grade_turns =0 #jsonData['grade_turns']
-                grade.grade_win = 0 #jsonData['grade_win']
-                grade.grade_equal = 0 #jsonData['grade_equal']
-                grade.grade_lose = 0 #jsonData['grade_lose']
-                grade.grade_goal = 0 #jsonData['grade_goal']
-                grade.grade_fumble = 0 #jsonData['grade_fumble']
-                grade.grade_integral = 0  #jsonData['grade_integral']
-                db.session.add(grade)
-            return Success(msg='新增成功')
 
 
-
-    #     print(league_message)
-    #     if league_message["league_type"] == 1:
-    #         grade.grade_name = jsonData['grade_name']
-    #         grade.grade_turns =0 #jsonData['grade_turns']
-    #         grade.grade_win = 0 #jsonData['grade_win']
-    #         grade.grade_equal = 0 #jsonData['grade_equal']
-    #         grade.grade_lose = 0 #jsonData['grade_lose']
-    #         grade.grade_goal = 0 #jsonData['grade_goal']
-    #         grade.grade_fumble = 0 #jsonData['grade_fumble']
-    #         grade.grade_integral = 0  #jsonData['grade_integral']
-    #         db.session.add(grade)
-    # return Success(msg='新增成功')

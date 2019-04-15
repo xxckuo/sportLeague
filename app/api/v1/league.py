@@ -21,7 +21,7 @@ def create_league():
         league.category_id = jsonData['category_id']
         league.school_id = jsonData['school_id']
         db.session.add(league)
-        if league.league_type == 1:
+        if int(league.league_type) == 1:
             team_message = db.session.query(Team.team_id).filter(Team.school_id == jsonData['school_id']).all()
             db.session.flush()
             for me in team_message:

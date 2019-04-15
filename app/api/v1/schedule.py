@@ -84,12 +84,13 @@ def schedule_select():
                               Schedule.schedule_team_a,Schedule.schedule_team_b,Schedule.schedule_support_a,
                               Schedule.schedule_support_b,Schedule.schedule_score_a,Schedule.schedule_score_b,
                               Schedule.schedule_location,Schedule.schedule_judge,Schedule.schedule_status,
-                              Schedule.schedule_turn_name)\
+                              Schedule.schedule_turn_name,Schedule.schedule_time)\
             .filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')==ssc[0]
                     ,Schedule.league_id==jsonData['league_id']
                     ).limit(jsonData['limit']).all()
         games=[]
         for g in ga:
+
             temp = {}
             temp['schedule_id'] = g[0]
             temp['league_status'] = g[1]
@@ -105,6 +106,7 @@ def schedule_select():
             temp['schedule_judge'] = g[11]
             temp['schedule_status'] = g[12]
             temp['schedule_turn_name'] = g[13]
+            temp['schedule_time'] = g[14]
             games.append(temp)
 
             group_team_a = db.session.query(Team.team_name, Team.team_logo). \

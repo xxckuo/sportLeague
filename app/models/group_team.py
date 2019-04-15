@@ -7,6 +7,7 @@ class Group_team(Base):
     group = relationship('Group')
     group_id = Column(Integer, ForeignKey('group.group_id'),comment='属于哪个小组')
     team_id = Column(Integer,comment='球队id')
+    league_id = Column(Integer,comment='赛事id')
     gt_win = Column(Integer,comment='胜',default=0)
     gt_equal = Column(Integer,comment='平',default=0)
     gt_lose = Column(Integer, comment='负',default=0)

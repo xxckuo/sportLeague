@@ -8,6 +8,6 @@ class League(Base):
     league_type = Column(SmallInteger,nullable=False,comment='赛事类型1是联赛，2是杯赛')
     school = relationship('School')
     school_id = Column(Integer, ForeignKey('school.school_id'),comment='学校id')
-    league_url = Column(String(80),nullable=False)
+    league_url = Column(String(500),nullable=False)
     category = relationship('Category')
     category_id = Column(Integer,ForeignKey('category.category_id'),comment='赛事类型，举例：篮球或者足球')

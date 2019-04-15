@@ -33,43 +33,7 @@ def schedule_create():
         db.session.add(schedule)
     return Success(msg='新增赛事成功')
 
-# @api.route('/select', methods=['POST'])
-# def schedule_select():
-#     jsonData = request.get_json()
-#     schedules = []
-#     schedule = Schedule.query.filter_by(status=jsonData['status'],
-#                     league_id=jsonData['league_id'])\
-#         .order_by(Schedule.schedule_time)\
-#         # .offset(jsonData['offset']).limit(jsonData['limit'])
-#
-#     for scs in schedule:
-#         time = [scs.schedule_time]
-#         time2=list(set(time))
-#
-#         print(time2)
-#
-#         group_team_a = db.session.query(Team.team_name, Team.team_logo). \
-#                 filter(Team.team_id == scs.schedule_team_a)
-#         group_team_b = db.session.query(Team.team_name, Team.team_logo). \
-#             filter(Team.team_id == scs.schedule_team_b)
-#
-#         schedule_team = scs.to_json()
-#
-#         for team_b in group_team_b:
-#             teamb = {}
-#             teamb['teamb_name'] = team_b[0]
-#             teamb['teamb_logo'] = team_b[1]
-#             schedule_team['teamb_name']=team_b[0]
-#             schedule_team['teamb_logo']=team_b[1]
-#
-#         for team_a in group_team_a:
-#             teama = {}
-#             teama['teama_name'] = team_a[0]
-#             teama['teama_logo'] = team_a[1]
-#             schedule_team['teama_name'] = team_a[0]
-#             schedule_team['teama_logo'] = team_a[1]
-#         schedules.append(schedule_team)
-#     return Success(msg='查找成功', data=schedules)
+
 
 @api.route('/select', methods=['POST'])
 def schedule_select():

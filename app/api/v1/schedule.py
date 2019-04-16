@@ -1,3 +1,4 @@
+import time
 from flask import request
 from sqlalchemy import func
 
@@ -39,11 +40,25 @@ def schedule_create():
 def schedule_select():
 
     jsonData = request.get_json()
-    sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter().group_by(
-        func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).offset(jsonData['offset']).all()
-    datas = {}
-    for ssc in sc:
+    returndata = []
+    if int(jsonData['order'])!=1:
 
+        # 1是正序
+    # print(func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'))
+        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d')).group_by(
+        func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).limit(jsonData['limit']).offset(jsonData['offset']).all()
+    else:
+
+        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).filter(
+            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d') < func.FROM_UNIXTIME(int(time.time()),
+                                                                                         '%Y-%m-%d')).group_by(
+            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).limit(jsonData['limit']).offset(
+            jsonData['offset']).all()
+
+
+
+    for ssc in sc:
+        datas = {}
         ga = db.session.query(Schedule.schedule_id,Schedule.status,Schedule.league_id,Schedule.schedule_process,
                               Schedule.schedule_team_a,Schedule.schedule_team_b,Schedule.schedule_support_a,
                               Schedule.schedule_support_b,Schedule.schedule_score_a,Schedule.schedule_score_b,
@@ -51,10 +66,9 @@ def schedule_select():
                               Schedule.schedule_turn_name,Schedule.schedule_time)\
             .filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')==ssc[0]
                     ,Schedule.league_id==jsonData['league_id']
-                    ).limit(jsonData['limit']).all()
+                    ).all()
         games=[]
         for g in ga:
-
             temp = {}
             temp['schedule_id'] = g[0]
             temp['league_status'] = g[1]
@@ -84,10 +98,11 @@ def schedule_select():
             for team_b in group_team_b:
                 temp['teamb_name'] = team_b[0]
                 temp['teamb_logo'] = team_b[1]
-
-        datas[ssc[0]] = games
+        datas['game'] = games
+        datas['time'] = ssc[0]
+        returndata.append(datas)
     #
-    return Success(msg='查找成功',data=datas)
+    return Success(msg='查找成功',data=returndata)
 
 @api.route('/update_schedule',methods=['POST'])
 def update_schedule():

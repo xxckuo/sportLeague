@@ -40,7 +40,7 @@ def schedule_select():
 
     jsonData = request.get_json()
     sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter().group_by(
-        func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).offset(jsonData['offset']).all()
+        func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).offset(jsonData['offset']).limit(jsonData['limit']).all()
     datas = {}
     for ssc in sc:
 
@@ -51,7 +51,7 @@ def schedule_select():
                               Schedule.schedule_turn_name,Schedule.schedule_time)\
             .filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')==ssc[0]
                     ,Schedule.league_id==jsonData['league_id']
-                    ).limit(jsonData['limit']).all()
+                    ).all()
         games=[]
         for g in ga:
 

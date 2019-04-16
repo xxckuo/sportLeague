@@ -9,6 +9,8 @@ class Player(Base):
     player_picture = Column(String(80),nullable=True,comment='球员照片')
     player_place = Column(String(20),nullable=True,comment='位置，边卫')
     team_id = Column(Integer,comment='球队id')
+    school = relationship('School')
+    school_id = Column(Integer, ForeignKey('school.school_id'), comment='管理员所在学校id')
     player_age = Column(Integer,nullable=True,comment='球员年龄')
     player_number = Column(Integer,nullable=True,comment='球员球衣号码')
     player_height = Column(Integer,nullable=True,comment='球员身高')

@@ -52,7 +52,7 @@ def schedule_select():
         sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).filter(
             func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d') < func.FROM_UNIXTIME(int(time.time()),
                                                                                          '%Y-%m-%d')).group_by(
-            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).limit(jsonData['limit']).offset(
+            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).order_by(func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d').desc()).limit(jsonData['limit']).offset(
             jsonData['offset']).all()
 
 

@@ -7,7 +7,7 @@ class Player_statistics(Base):
     player = relationship('Player')
     player_id = Column(Integer, ForeignKey('player.player_id'),comment='球员id')
     league = relationship('League')
-    league_id = Column(Integer, ForeignKey('League.league_id'), comment='赛事id')
+    league_id = Column(Integer, ForeignKey('league.league_id'), comment='赛事id')
     team_name = Column(String(20),comment='球队名称')
     pt_score = Column(Integer, comment='进球',default=0)
     pt_assist = Column(Integer, comment='助攻',default=0)

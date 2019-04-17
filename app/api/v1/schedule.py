@@ -165,3 +165,26 @@ def update_schedule():
                 gdb.gt_integral = int(gdb.gt_integral) + 1
     return Success(msg='修改比分成功')
 
+@api.route('/get_knockout_schedule')
+def get_by_scheduleid_scheduleprocess():
+    league_id = request.args.get('league_id')
+    schedule = db.session.query(Schedule.schedule_turn_name).filter(Schedule.league_id == request.args.get('league_id'),Schedule.schedule_process ==2).group_by(Schedule.schedule_turn_name).order_by(func.max(Schedule.create_time).desc()).all()
+    returndata = []
+    for sc in schedule:
+        datagames = {}
+        print(sc[0])
+        sql = "select a.schedule_id,b.team_name,c.team_name from schedule a inner join" \
+              " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where league_id = %s and schedule_turn_name = '%s'" % (league_id,sc[0])
+
+        games = db.session.execute(sql).fetchall()
+        thisturngames = []
+        for g in games:
+            game = {}
+            game['schedule_id'] = g[0]
+            game['schedule_team_a'] = g[1]
+            game['schedule_team_b'] = g[2]
+            thisturngames.append(game)
+        datagames['turn_name'] = sc[0]
+        datagames['games'] = thisturngames
+        returndata.append(datagames)
+    return Success(msg='淘汰赛对阵如下',data=returndata)

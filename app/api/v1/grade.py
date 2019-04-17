@@ -15,6 +15,7 @@ def display_grade():
     messages = []
     for t in data:
         d = {}
+        d['grade_id']=t[0]
         d['grade_team'] = t[1]
         d['grade_turns'] = t[2]
         d['grade_win'] = t[3]

@@ -172,7 +172,7 @@ def get_by_scheduleid_scheduleprocess():
     returndata = []
     for sc in schedule:
         datagames = {}
-        sql = "select a.schedule_id,b.team_name,c.team_name from schedule a inner join" \
+        sql = "select a.schedule_id,b.team_name,b.team_logo,c.team_name,c.team_logo from schedule a inner join" \
               " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where league_id = %s and schedule_turn_name = '%s'" % (league_id,sc[0])
 
         games = db.session.execute(sql).fetchall()
@@ -181,7 +181,9 @@ def get_by_scheduleid_scheduleprocess():
             game = {}
             game['schedule_id'] = g[0]
             game['schedule_team_a'] = g[1]
-            game['schedule_team_b'] = g[2]
+            game['team_a_logo'] = g[2]
+            game['schedule_team_b'] = g[3]
+            game['team_b_logo'] = g[4]
             thisturngames.append(game)
         datagames['turn_name'] = sc[0]
         datagames['games'] = thisturngames

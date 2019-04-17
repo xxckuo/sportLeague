@@ -172,7 +172,6 @@ def get_by_scheduleid_scheduleprocess():
     returndata = []
     for sc in schedule:
         datagames = {}
-        print(sc[0])
         sql = "select a.schedule_id,b.team_name,c.team_name from schedule a inner join" \
               " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where league_id = %s and schedule_turn_name = '%s'" % (league_id,sc[0])
 

@@ -189,3 +189,28 @@ def get_by_scheduleid_scheduleprocess():
         datagames['games'] = thisturngames
         returndata.append(datagames)
     return Success(msg='淘汰赛对阵如下',data=returndata)
+
+@api.route('/schedule_detail', methods=['GET'])
+def schedule_detail():
+    schedule_id = request.args.get('schedule_id')
+    datas = []
+
+    schedule_detail = Schedule.query.filter(Schedule.schedule_id == schedule_id ).first()
+
+    # datas.append(schedule_detail.to_json())
+    details = schedule_detail.to_json()
+
+    sql = "select a.schedule_id,b.team_name,b.team_logo,c.team_name,c.team_logo from schedule a inner join" \
+          " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where schedule_id = %s"%(schedule_id)
+
+    games = db.session.execute(sql).fetchall()
+    for g in games:
+
+        details['teama_name'] = g[1]
+        details['teama_logo'] = g[2]
+        details['teamb_name'] = g[3]
+        details['teamb_logo'] = g[4]
+
+    datas.append(details)
+    return Success(msg='查看赛事详情成功', data=datas)
+

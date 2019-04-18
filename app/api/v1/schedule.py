@@ -193,23 +193,32 @@ def get_by_scheduleid_scheduleprocess():
 @api.route('/schedule_detail', methods=['GET'])
 def schedule_detail():
     schedule_id = request.args.get('schedule_id')
-    datas = []
+    # datas = []
 
-    schedule_detail = Schedule.query.filter(Schedule.schedule_id == schedule_id ).first()
+    # schedule_detail = Schedule.query.filter(Schedule.schedule_id == schedule_id ).first()
 
     # datas.append(schedule_detail.to_json())
-    details = schedule_detail.to_json()
 
-    sql = "select a.schedule_id,b.team_name,b.team_logo,c.team_name,c.team_logo from schedule a inner join" \
+    sql = "select a.schedule_id,a.schedule_support_a,a.schedule_support_b,a.schedule_score_a,a.schedule_score_b,a.schedule_location,a.schedule_time,a.schedule_judge,a.schedule_status,b.team_name,b.team_logo,c.team_name,c.team_logo from schedule a inner join" \
           " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where schedule_id = %s"%(schedule_id)
 
+    details = {}
     games = db.session.execute(sql).fetchall()
     for g in games:
-
-        details['teama_name'] = g[1]
-        details['teama_logo'] = g[2]
-        details['teamb_name'] = g[3]
-        details['teamb_logo'] = g[4]
-    datas.append(details)
-    return Success(msg='查看赛事详情成功', data=datas)
+        details['league_id'] = g[0]
+        details['schedule_support_a'] = g[1]
+        details['schedule_support_b'] = g[2]
+        details['schedule_score_a'] = g[3]
+        details['schedule_score_b'] = g[4]
+        details['schedule_location'] = g[5]
+        details['schedule_time'] = g[6]
+        details['schedule_judge'] = g[7]
+        details['schedule_status'] = g[8]
+        details['teama_name'] = g[9]
+        details['teama_logo'] = g[10]
+        details['teamb_name'] = g[11]
+        details['teamb_logo'] = g[12]
+        print(details)
+    # datas.append(details)
+    return Success(msg='查看赛事详情成功', data=details)
 

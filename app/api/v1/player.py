@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import request
 from app.libs.redprint import Redprint
 from app.models.base import db
 from app.libs.error_code import Success
@@ -21,15 +21,16 @@ def input_player():
         player.player_height = data["player_height"]
         player.player_weight = data["player_weight"]
         player.player_grade = data["player_grade"]
+        player.school_id = data["school_id"]
         db.session.add(player)
     return Success(msg='新增成功')
 
-@api.route('/alter_player')
+@api.route('/alter_player',methods= ['POST'])
 def alter_player():
     data = request.get_json()
     with db.auto_commit():
         players = Player.query.filter(Player.player_id == data["player_id"]).first()
-        Player.player_name  = data["player_name"]
+        players.player_name  = data["player_name"]
         players.player_sex  = data["player_sex"]
         players.player_picture = data["player_picture"]
         players.player_place = data["player_place"]
@@ -39,7 +40,7 @@ def alter_player():
         players.player_height = data["player_height"]
         players.player_weight = data["player_weight"]
         players.player_grade = data["player_grade"]
-    return Success(msg='修改成功')
+        return Success(msg='修改成功')
 
 @api.route('/select_id')
 def select_id():

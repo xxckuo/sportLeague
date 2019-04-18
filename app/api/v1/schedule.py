@@ -210,7 +210,6 @@ def schedule_detail():
         details['teama_logo'] = g[2]
         details['teamb_name'] = g[3]
         details['teamb_logo'] = g[4]
-
     datas.append(details)
     return Success(msg='查看赛事详情成功', data=datas)
 

@@ -44,7 +44,7 @@ def create_league():
 @api.route('/query_id')
 def query_id():
     args = request.args.get("school_id")
-    league_type = League.query.filter(League.school_id==args).all()
+    league_type = League.query.filter(League.school_id==args,League.status == 1).all()
     league_types = []
     for type in league_type:
         league_types.append(type.to_json())

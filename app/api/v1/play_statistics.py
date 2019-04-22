@@ -40,6 +40,7 @@ def play_select():
                                 Player_statistics.pt_yellow_card,Player_statistics.pt_red_card,Player.player_number).\
             filter(Player_statistics.pt_score!=0,Player_statistics.player_id == Player.player_id,Player_statistics.league_id == jsonData['league_id']).\
             order_by(Player_statistics.pt_score.desc()).all()
+        params = 'pt_score'
     if int(jsonData['select']) == 2:
         play = db.session.query(Player_statistics.player_id, Player.player_name,Player_statistics.pt_id,
                                 Player_statistics.team_name, Player_statistics.pt_score, Player_statistics.pt_assist,
@@ -48,6 +49,7 @@ def play_select():
             filter(Player_statistics.pt_assist!=0,Player_statistics.player_id == Player.player_id,
                    Player_statistics.league_id == jsonData['league_id']). \
             order_by(Player_statistics.pt_assist.desc()).all()
+        params = 'pt_assist'
     if int(jsonData['select']) == 3:
         play = db.session.query(Player_statistics.player_id, Player.player_name,Player_statistics.pt_id,
                                 Player_statistics.team_name, Player_statistics.pt_score, Player_statistics.pt_assist,
@@ -56,6 +58,7 @@ def play_select():
             filter(Player_statistics.pt_foul!=0,Player_statistics.player_id == Player.player_id,
                    Player_statistics.league_id == jsonData['league_id']). \
             order_by(Player_statistics.pt_foul.desc()).all()
+        params = 'pt_foul'
     if int(jsonData['select']) == 4:
         play = db.session.query(Player_statistics.player_id, Player.player_name, Player_statistics.pt_id,
                                 Player_statistics.team_name, Player_statistics.pt_score, Player_statistics.pt_assist,
@@ -64,6 +67,7 @@ def play_select():
             filter(Player_statistics.pt_yellow_card!=0,Player_statistics.player_id == Player.player_id,
                    Player_statistics.league_id == jsonData['league_id']). \
             order_by(Player_statistics.pt_yellow_card.desc()).all()
+        params = 'pt_yellow_card'
     if int(jsonData['select']) == 5:
         play = db.session.query(Player_statistics.player_id, Player.player_name,Player_statistics.pt_id,
                                 Player_statistics.team_name, Player_statistics.pt_score, Player_statistics.pt_assist,
@@ -72,20 +76,37 @@ def play_select():
             filter(Player_statistics.pt_red_card!=0,Player_statistics.player_id == Player.player_id,
                    Player_statistics.league_id == jsonData['league_id']). \
             order_by(Player_statistics.pt_red_card.desc()).all()
+        params = 'pt_red_card'
 
-    for p in play:
+    for p in range(len(play)):
+
         player = {}
-        player['player_id'] = p[0]
-        player['player_name'] = p[1]
-        # player['player_number'] = p[2]
-        player['pt_id'] = p[2]
-        player['team_name'] = p[3]
-        player['pt_score'] = p[4]
-        player['pt_assist'] = p[5]
-        player['pt_foul'] = p[6]
-        player['pt_yellow_card'] = p[7]
-        player['pt_red_card'] = p[8]
-        player['player_number'] = p[9]
-        plays.append(player)
 
+        player['player_id'] = play[p][0]
+        player['player_name'] = play[p][1]
+        player['pt_id'] = play[p][2]
+        player['team_name'] = play[p][3]
+        player['pt_score'] = play[p][4]
+        player['pt_assist'] = play[p][5]
+        player['pt_foul'] = play[p][6]
+        player['pt_yellow_card'] = play[p][7]
+        player['pt_red_card'] = play[p][8]
+        player['player_number'] = play[p][9]
+        player['rank'] =p
+        # 判断是否是第一个，如果是直接赋值为1
+        # 如果不是第一个，与上面的进行对比，对比结果分析，
+        # 如果和上面的值大小一样，直接使用上面的排名进行赋值，
+        # 如果比上一个小，则使用它在列表中的顺序+1
+
+        if p==0:
+            player['rank'] = 1
+        else:
+            if player[params]<plays[p-1][params]:
+                player['rank'] = p + 1
+            else:
+                player['rank']=plays[p-1]['rank']
+
+        plays.append(player)
     return Success(msg='查找球员积分榜成功', data=plays)
+
+

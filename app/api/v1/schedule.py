@@ -45,7 +45,7 @@ def schedule_select():
 
         # 1是正序
     # print(func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'))
-        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time(),Schedule.league_id==jsonData['league_id']),'%Y-%m-%d')).group_by(
+        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'),Schedule.league_id==jsonData['league_id']).group_by(
         func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).limit(jsonData['limit']).offset(jsonData['offset']).all()
     else:
 

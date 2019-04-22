@@ -45,13 +45,12 @@ def schedule_select():
 
         # 1是正序
     # print(func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'))
-        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d')).group_by(
+        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time(),Schedule.league_id==jsonData['league_id']),'%Y-%m-%d')).group_by(
         func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).limit(jsonData['limit']).offset(jsonData['offset']).all()
     else:
 
         sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).filter(
-            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d') < func.FROM_UNIXTIME(int(time.time()),
-                                                                                         '%Y-%m-%d')).group_by(
+            func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d') < func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'),Schedule.league_id==jsonData['league_id']).group_by(
             func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d')).order_by(func.FROM_UNIXTIME(Schedule.schedule_time, '%Y-%m-%d').desc()).limit(jsonData['limit']).offset(
             jsonData['offset']).all()
 
@@ -199,7 +198,7 @@ def schedule_detail():
 
     # datas.append(schedule_detail.to_json())
 
-    sql = "select a.schedule_id,a.schedule_support_a,a.schedule_support_b,a.schedule_score_a,a.schedule_score_b,a.schedule_location,a.schedule_time,a.schedule_judge,a.schedule_status,b.team_name,b.team_logo,c.team_name,c.team_logo,a.schedule_turn_name from schedule a inner join" \
+    sql = "select a.schedule_id,a.schedule_support_a,a.schedule_support_b,a.schedule_score_a,a.schedule_score_b,a.schedule_location,a.schedule_time,a.schedule_judge,a.schedule_status,b.team_name,b.team_logo,c.team_name,c.team_logo from schedule a inner join" \
           " team b on a.schedule_team_a=b.team_id inner join team c on a.schedule_team_b=c.team_id where schedule_id = %s"%(schedule_id)
 
     details = {}
@@ -218,8 +217,7 @@ def schedule_detail():
         details['teama_logo'] = g[10]
         details['teamb_name'] = g[11]
         details['teamb_logo'] = g[12]
-        details['schedule_turn_name'] = g[13]
-        print(details)
+        # print(details)
     # datas.append(details)
     return Success(msg='查看赛事详情成功', data=details)
 

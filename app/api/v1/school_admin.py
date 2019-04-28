@@ -20,9 +20,6 @@ def create_school_admin():
         db.session.add(school_admin)
     return Success(msg='新增管理员成功')
 
-
-
-
 @api.route('/update',methods=['POST'])
 def update_school_admin():
     jsonData = request.get_json()

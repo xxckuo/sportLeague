@@ -1,6 +1,6 @@
 from flask import request,  jsonify, current_app
 
-from app.libs.error_code import FailError, Success
+from app.libs.error_code import FailError
 from app.libs.redprint import Redprint
 from app.models.school_admin import School_admin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -29,7 +29,6 @@ def get_token():
         return jsonify(t)
     else:
         return FailError(msg='账号或密码不正确')
-
 
 def generate_auth_token(uid,sa_auth,school_id,admin_name,expiration=7200):
 

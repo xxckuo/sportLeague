@@ -29,7 +29,6 @@ def verify_password(token,password):
         # data = json.dumps(user_info)
         # print(data)
         # return Success(msg='查找管理员成功', data=data)
-
 # 验证token将token解码
 def verify_auth_token(token):
     s = Serializer(current_app.config['SECRET_KEY'])

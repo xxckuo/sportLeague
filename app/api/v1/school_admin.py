@@ -13,11 +13,15 @@ def create_school_admin():
     with db.auto_commit():
         school_admin = School_admin()
         school_admin.school_id = jsonData['school_id']
+        school_admin.sa_auth = jsonData['sa_auth']
         school_admin.sa_account = jsonData['sa_account']
         school_admin.sa_name = jsonData['sa_name']
         school_admin.sa_password = jsonData['sa_password']
         db.session.add(school_admin)
     return Success(msg='新增管理员成功')
+
+
+
 
 @api.route('/update',methods=['POST'])
 def update_school_admin():
@@ -40,7 +44,11 @@ def delete_school_admin():
 
 @api.route('/get', methods=['GET'])
 def get_school_admin():
-    school_admin = School_admin.query.filter_by()
+
+    school_id = request.args.get('school_id')
+
+    school_admin = School_admin.query.filter_by(school_id = school_id)
+
     schools = []
     for sc in school_admin:
         schools.append(sc.to_json())

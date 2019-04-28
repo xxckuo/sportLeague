@@ -45,7 +45,7 @@ def schedule_select():
 
         # 1是正序
     # print(func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'))
-        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time(),Schedule.league_id==jsonData['league_id']),'%Y-%m-%d')).group_by(
+        sc = db.session.query(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).filter(func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')>=func.FROM_UNIXTIME(int(time.time()),'%Y-%m-%d'),Schedule.league_id==jsonData['league_id']).group_by(
         func.FROM_UNIXTIME(Schedule.schedule_time,'%Y-%m-%d')).limit(jsonData['limit']).offset(jsonData['offset']).all()
     else:
 
@@ -116,12 +116,12 @@ def update_schedule():
         with db.auto_commit():
             gda = Grade.query.filter(Grade.grade_team == jsonData['schedule_team_a'],Grade.league_id == jsonData['league_id']).first()
             gdb = Grade.query.filter(Grade.grade_team == jsonData['schedule_team_b'],Grade.league_id == jsonData['league_id']).first()
-            gda.grade_goal = jsonData['schedule_score_a']
-            gda.grade_fumble = jsonData['schedule_score_b']
+            gda.grade_goal = int(gda.grade_goal)+jsonData['schedule_score_a']
+            gda.grade_fumble = int(gda.grade_fumble)+jsonData['schedule_score_b']
             gda.grade_turns = int(gda.grade_turns)+1
 
-            gdb.grade_goal = jsonData['schedule_score_b']
-            gdb.grade_fumble = jsonData['schedule_score_a']
+            gdb.grade_goal = int(gdb.grade_goal)+jsonData['schedule_score_b']
+            gdb.grade_fumble = int(gdb.grade_fumble)+jsonData['schedule_score_a']
             gdb.grade_turns = int(gdb.grade_turns) + 1
 
             if int(jsonData['schedule_score_a']) > int(jsonData['schedule_score_b']):
@@ -143,11 +143,11 @@ def update_schedule():
                                           Group_team.league_id == jsonData['league_id']).first()
             gdb = Group_team.query.filter(Group_team.team_id == jsonData['schedule_team_b'],
                                           Group_team.league_id == jsonData['league_id']).first()
-            gda.gt_goal = jsonData['schedule_score_a']
-            gda.gt_fumble = jsonData['schedule_score_b']
+            gda.gt_goal = int(gda.gt_goal)+jsonData['schedule_score_a']
+            gda.gt_fumble = int(gda.gt_fumble)+jsonData['schedule_score_b']
 
-            gdb.gt_goal = jsonData['schedule_score_b']
-            gdb.gt_fumble = jsonData['schedule_score_a']
+            gdb.gt_goal = int(gdb.gt_goal)+jsonData['schedule_score_b']
+            gdb.gt_fumble = int(gdb.gt_fumble)+jsonData['schedule_score_a']
 
             if int(jsonData['schedule_score_a']) > int(jsonData['schedule_score_b']):
                 gda.gt_win = int(gda.gt_win) + 1
